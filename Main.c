@@ -12,12 +12,6 @@ int main() {
 
     while(1) {
 
-        if(scanf("%d", &c)!=1){
-            printf("invalid choise");
-             while (getchar() != '\n');
-             continue;
-        }
-
         switch (c) {
             case 0:
                 StrList_free(strList);
