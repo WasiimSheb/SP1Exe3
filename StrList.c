@@ -112,19 +112,23 @@ char* StrList_firstData(const StrList* StrList){
     return NULL;
 }
 
-void StrList_print(const StrList* StrList) {
-    if(StrList == NULL || StrList -> head == NULL){
+void StrList_print(const StrList* StrList){
+	 if (StrList == NULL || StrList-> head == NULL) {
         printf("\n");
         return;
     }
-    Node *current = StrList->head;
-    while (current -> _next != NULL) {
-        printf("%s ", current->value);
-        current = current->_next;
-    }
-    printf("%s\n", current->value);
+    Node* curr = StrList-> head;
+	for(int i=0; i< StrList -> size; i++){
+		if(curr->value != NULL){
+			printf("%s", curr-> value);
+			if(i < (StrList-> size)-1){
+				printf(" ");
+			}
+		}
+		curr = curr->_next;
+	}
+	printf("\n");
 }
-
 void StrList_printAt(const StrList* Strlist, int index){
     if (Strlist == NULL || index > StrList_size(Strlist) || index < 0){
         return;
