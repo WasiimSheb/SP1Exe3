@@ -4,11 +4,11 @@ CFLAGS= -Wall
 
 all: StrList 
 
-StrList: main.o StrList.o
-	$(CC) $(CFLAGS) main.o StrList.o -o StrList
+StrList: Main.o StrList.o
+	$(CC) $(CFLAGS) Main.o StrList.o -o StrList
 
-main.o: main.c
-	$(CC) -c main.c
+Main.o: Main.c
+	$(CC) -c Main.c
 
 StrList.o: StrList.c StrList.h
 	$(CC) -c StrList.c	
