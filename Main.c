@@ -62,9 +62,8 @@ int main() {
             case 10:
                 StrList_reverse(strList);
                 break;
-            case 11://Clear the list
-                size_t size = StrList_size(strList);
-                for(size_t i=0; i<size; i++){
+            case 11: // Clear the list
+                while (StrList_size(strList) > 0) {
                     StrList_removeAt(strList, 0);
                 }
                 break;
