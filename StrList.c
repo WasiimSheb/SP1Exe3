@@ -1,325 +1,316 @@
+#include<stdlib.h>
+#include<string.h>
 #include "StrList.h"
-#include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-#include <stdbool.h>
 
-// Define the structure for a node in the linked list
-typedef struct _node {
-    char* _data;
-    struct _node* _next;
-} Node;
+typedef struct Node
+{
+    char* value;
+    struct Node* _next;
+}Node;
 
-// Define the structure for the StrList
-typedef struct _StrList {
-    Node* _head;
-    size_t _size;
-} StrList;
 
-// Node implementation:
+typedef struct _StrList
+{
+    Node* head;
+    size_t size;
+}StrList;
 
-Node* Node_alloc(char* str, Node* next) {
-    Node* p = (Node*)malloc(sizeof(Node));
-    p->_data = str;
-    p->_next = next;
+Node* Node_alloc(char* value){
+    Node* allocate = (Node*) malloc(sizeof(Node));
+    if (allocate == NULL){return NULL;}
+    allocate -> value = value;
+    return allocate;
+}
+
+void Nodefree(Node* p){
+    free(p -> value);
+    free(p);
+}
+
+StrList* StrList_alloc() {
+    StrList* p= (StrList*)malloc(sizeof(StrList));
+    if(p == NULL) {return NULL;}
+    p -> head = NULL;
+    p -> size= 0;
     return p;
 }
 
-void Node_free(Node* node) {
-    if(node->_data != NULL){
-        free(node->_data);
+void StrList_free(StrList* p) {
+    if (p == NULL) {
+        return;
     }
-    free(node);
-}
 
-// List implementation
-StrList* StrList_alloc(){
-    StrList* list = (StrList*)malloc(sizeof(StrList));
-    if (list) {
-        list->_head = NULL;
-        list->_size = 0;
+    Node* current = p->head;
+    while (p -> head != NULL) {
+        Node* temp = current -> _next;
+        Nodefree(temp);
+        current = current -> _next;
     }
-    return list;
+    free(p);
 }
-void StrList_free(StrList* StrList) {
-    if (StrList) {
-        Node* node = StrList->_head;
-        while (node) {
-            Node* temp = node;
-            node = node->_next;
-            free(temp->_data);
-            free(temp);
-        }
-        free(StrList);
-    }
-}
-
 
 size_t StrList_size(const StrList* StrList){
-   	return StrList->_size;
+    return StrList -> size;
 }
 
-void StrList_insertLast(StrList* StrList, const char* data) {
-    Node* node = Node_alloc(data, NULL);
-    if (StrList->_size == 0) {
-        StrList->_head = node; // Update head
-    } else {
-        Node* curr = StrList->_head;
-        while (curr->_next != NULL) {
-            curr = curr->_next;
+void StrList_insertLast(StrList* StrList, const char* data){
+    if(StrList == NULL){ return;}
+    Node *newNode = (Node*) malloc(sizeof (Node));
+    newNode -> value = strdup(data);
+    newNode -> _next = NULL;
+
+    if (StrList -> head == NULL){
+        StrList -> head = newNode;
+    }
+    else{
+        Node *temp = StrList -> head;
+        while (temp -> _next != NULL){
+            temp = temp -> _next;
         }
-        curr->_next = node;
+        temp -> _next = newNode;
     }
-    StrList->_size++;
+    StrList -> size++;
 }
-void StrList_insertAt(StrList* StrList, const char* data, int index) {
-    if (index < 0 || index > StrList->_size) {
-        printf("invalid index\n");
+
+void StrList_insertAt(StrList* StrList, const char* data, int index){
+    if (index >= StrList_size(StrList) || StrList == NULL || index < 0){
         return;
     }
-
-    Node* node = Node_alloc(data, NULL);
-    if (node == NULL) {
-        printf("Memory allocation failed\n");
+    Node *newNode = (Node*) malloc(sizeof (Node));
+    if(newNode == NULL){
         return;
     }
-
+    newNode -> value = strdup(data);
+    if (newNode -> value == NULL){
+        Nodefree(newNode);
+        return;
+    }
+    newNode -> _next = NULL;
     if (index == 0) {
-        node->_next = StrList->_head;
-        StrList->_head = node;
+        newNode->_next = StrList->head;
+        StrList -> head = newNode;
     } else {
-        Node* curr= StrList->_head;
-        for (int i = 0; i < index - 1; i++) {
-            curr = curr->_next;
+        int n = 0;
+        Node* current = StrList -> head;
+        while (n < index - 1 && current != NULL){
+            current = current -> _next;
+            n += 1;
         }
-        node->_next = curr->_next;
-        curr->_next = node;
+        if(current != NULL){
+            newNode -> _next = current -> _next;
+            current -> _next = newNode;
+        }
     }
-
-    StrList->_size++;
+    StrList->size++;
 }
 
 char* StrList_firstData(const StrList* StrList){
-    return StrList->_head->_data;
+    if (StrList != NULL){
+        if (StrList -> head != NULL){
+            return StrList -> head -> value;
+        }
+    }
+    return NULL;
 }
 
-void StrList_print(const StrList* StrList){
-	 if (StrList == NULL || StrList->_head == NULL) {
+void StrList_print(const StrList* StrList) {
+    if(StrList == NULL || StrList -> head == NULL){
         printf("\n");
         return;
     }
-    Node* curr = StrList->_head;
-	for(int i=0; i<StrList->_size; i++){
-		if(curr->_data != NULL){
-			printf("%s", curr->_data);
-			if(i < (StrList->_size)-1){
-				printf(" ");
-			}
-		}
-		curr = curr->_next;
-	}
-	printf("\n");
+    Node *current = StrList->head;
+    while (current -> _next != NULL) {
+        printf("%s ", current->value);
+        current = current->_next;
+    }
+    printf("%s\n", current->value);
 }
 
-void StrList_printAt(const StrList* Strlist, int index) {
-    if (Strlist == NULL || Strlist->_head == NULL) {
+void StrList_printAt(const StrList* Strlist, int index){
+    if (Strlist == NULL || index > StrList_size(Strlist) || index < 0){
         return;
     }
-
-    if (index < 0 || index >= StrList_size(Strlist)) {
-        return;
+    if (Strlist -> head == NULL){ return;}
+    if (Strlist -> head -> value == NULL){ return;}
+    Node* temp = Strlist -> head;
+    int n = 0;
+    while (temp != NULL && n < index){
+        temp = temp -> _next;
+        n += 1;
     }
-
-    Node* curr = Strlist->_head;
-    for (int i = 0; i < index; i++) {
-        curr = curr->_next;// Move to the next node
-    }
-
-    printf("%s\n",curr->_data);
+    if(temp == NULL || temp -> value == NULL){ return;}
+    char *curr = temp -> value;
+    printf("%s", curr);
 }
 
-
-int StrList_printLen(const StrList* Strlist) {
-    if (Strlist == NULL || Strlist->_head == NULL) {
-        return 0; // List is empty, so return 0 characters
-    }
-
+int StrList_printLen(const StrList* Strlist){
+    if(Strlist == NULL){return 0;}
     int sum = 0;
-    Node* current = Strlist->_head;
-    while (current != NULL) {
-        sum += strlen(current->_data); // Add the length of each string to sum
-        current = current->_next; // Move to the next node
+    Node* temp = Strlist -> head;
+    while (temp != NULL){
+        if(temp -> value != NULL){
+            sum += strlen(temp -> value);
+        }
+        else {
+            sum += 0;
+        }
+        temp = temp->_next;
     }
     return sum;
 }
 
 int StrList_count(StrList* StrList, const char* data){
-    if(StrList==NULL || StrList->_head==NULL){
-        return 0;// List is empty, so return 0 occurrences
-    }
-    int  count=0;
-    Node* curr=StrList->_head;
-    while (curr!=NULL) {// Traverse the list
-        if (strcmp(curr->_data, data) == 0) { // Compare the current string with the given string
-            count++;
+    if (StrList == NULL || StrList -> head == NULL){return 0;}
+    Node* curr = StrList -> head;
+    int counter = 0;
+    while(curr != NULL){
+        if(strcmp(curr -> value, data) == 0){
+            counter+= 1;
         }
-        curr=curr->_next;
+        curr = curr -> _next;
     }
-    return count;
+    return counter;
 }
 
-void StrList_remove(StrList* Strlist, const char* data) {
-    Node* previous = NULL;// Pointer to the previous node
-    Node* current = Strlist->_head;
-
-// Traverse the list until the end or until the data is found
-    while (current != NULL) {
-        // Check if the current node contains the specified data
-        if (strcmp(current->_data, data) == 0) {
-            if (previous == NULL) {
-                // If the node to remove is the head
-                Node* tmp = Strlist->_head;
-                Strlist->_head = Strlist->_head->_next;// Update the head
-                Node_free(tmp);
+void StrList_remove(StrList* StrList, const char* data){
+    if (StrList == NULL || StrList -> head == NULL){return;}
+    Node* curr = StrList->head;
+    Node* prev = NULL;
+    Node* temp = NULL;
+    while (curr != NULL) {
+        if (strcmp(curr->value, data) == 0) {
+            if (prev == NULL) {
+                StrList->head = curr->_next;
             } else {
-                previous->_next = current->_next;
-                Node_free(current);
+                prev->_next = curr->_next;
             }
-            Strlist->_size--;
-            return; 
+            temp = curr;
+            curr = curr->_next;
+            free(temp->value);
+            free(temp);
+            StrList->size--;
+        } else {
+            prev = curr;
+            curr = curr->_next;
         }
-          // Move to the next node
-        previous = current;
-        current = current->_next;
     }
 }
 
-void StrList_removeAt(StrList* Strlist, int index) {
-    if (index < 0 || (size_t)index >= Strlist->_size) {
-        return; // Index out of bounds
+void StrList_removeAt(StrList* StrList, int index){
+    if (StrList == NULL || StrList -> head == NULL || index >= StrList_size(StrList) || index < 0){
+        return;
     }
-
-    Node* previous = NULL;
-    Node* current = Strlist->_head;
-    size_t current_index = 0;// Index of the current node
-
-    // Traverse the list until reaching the node at the specified index
-    while (current_index < (size_t)index) {
-        previous = current;
-        current = current->_next;
-        current_index++;
+    Node* temp = StrList -> head;
+    Node* prev = NULL;
+    int n = 0;
+    while (temp != NULL && n < index){
+        prev = temp;
+        temp = temp -> _next;
+        n++;
     }
-
-    if (previous == NULL) {
-        // If removing the head
-        Strlist->_head = Strlist->_head->_next;
-    } else {
-        previous->_next = current->_next;
+    if(temp == NULL){return;}
+    if(prev == NULL){
+        StrList -> head = temp -> _next;
     }
-
-    Node_free(current);
-    Strlist->_size--;
+    else{
+        prev -> _next = temp -> _next;
+    }
+    free(temp -> value);
+    free(temp);
+    StrList -> size--;
 }
+
 
 int StrList_isEqual(const StrList* StrList1, const StrList* StrList2){
-    if(StrList1 ==NULL || StrList2 ==NULL){
-        return false;
-    }
-  if(StrList1->_size !=StrList2->_size){
-      return false;
-  }
-    Node* curr1 = StrList1->_head;
-    Node* curr2 = StrList2->_head;
-    // Traverse both lists simultaneously and compare each element
-    while (curr1 != NULL && curr2 != NULL){
-        // If the data of the current nodes is not equal, the lists are not equal
-        if (strcmp(curr1->_data, curr2->_data) != true) {
-            return false;
+    if((StrList1 == NULL && StrList2 != NULL) || (StrList1 != NULL && StrList2 == NULL)){return 0;}
+    if(StrList_size(StrList1) != StrList_size(StrList2)){return 0;}
+    if(StrList1 == NULL && StrList2 == NULL){return 1;}
+    if(StrList2 -> head == NULL || StrList1 -> head == NULL){return 0;}
+    Node* st1 = StrList1 -> head;
+    Node* st2 = StrList2 -> head;
+    while (st1 != NULL && st2 != NULL){
+        if(strcmp(st1 -> value, st2 -> value) != 0){
+            return 0;
         }
-        curr1 = curr1->_next;
-        curr2 = curr2->_next;
+        else {
+            st1 = st1 -> _next;
+            st2 = st2 -> _next;
+        }
     }
-    return true;
+    return 1;
 }
+
 StrList* StrList_clone(const StrList* OriginalList){
-     if(OriginalList == NULL || OriginalList -> _head == NULL){
-         return NULL ; // List is empty or NULL, cannot clone
-     }
-    // Allocate memory for the new list
-    StrList* newList= StrList_alloc();
-    if (newList == NULL) {
-        return NULL; // Memory allocation failed
+    if(OriginalList == NULL || OriginalList -> head == NULL){return NULL;}
+    StrList* p = StrList_alloc();
+    if( p == NULL ){return NULL;}
+    Node* temp1 = OriginalList -> head;
+    Node* temp3 = NULL;
+    while (temp1 != NULL){
+        Node* l = (Node*) malloc(sizeof (Node));
+        if(l == NULL){
+            StrList_free(p);
+            return NULL;
+        }
+        l -> _next = NULL;
+        l -> value = strdup(temp1 -> value);
+        if(temp3 == NULL){p -> head = l;}
+        else{temp3 -> _next = l;}
+        temp3 = l;
+        temp1 = temp1 -> _next;
+        p -> size++;
     }
-    Node* curr= OriginalList->_head;
-    while (curr!=NULL){
-        // Insert the current data into the cloned list
-        StrList_insertLast(newList, curr->_data);
-        curr= curr->_next;
-    }
-    return newList;
+    return p;
 }
-void StrList_reverse( StrList* StrList){
-    if (StrList == NULL || StrList->_head == NULL || StrList->_size <= 1) {
-        return; // Empty list or single node, no need to reverse
-    }
-    Node* curr = StrList->_head;
-    Node* prev = NULL;
-    Node* next = NULL;
 
-    // Traverse the list and reverse the pointers
-    while (curr != NULL) {
-        next = curr->_next; // Store the next node
-        curr->_next = prev; // Reverse the pointer
-        prev = curr; // Move prev to current node
-        curr = next; // Move current to next node
+void StrList_reverse(StrList* StrList){
+    if(StrList == NULL || StrList -> head == NULL || StrList -> head -> _next == NULL){ return;}
+    if(StrList_size(StrList) == 1){ return;}
+    Node *prev = NULL;
+    Node *current = StrList -> head;
+    Node *next = NULL;
+
+    while (current != NULL) {
+        next = current -> _next;
+        current -> _next = prev;
+        prev = current;
+        current = next;
     }
-    // Update the head of the list
-    StrList->_head = prev;
+    StrList -> head = prev;
 }
-// in this method we use selction sort
-void StrList_sort( StrList* StrList) {
-    if (StrList==NULL || StrList->_size <= 1) {
-        return; // No need to sort
-    }
-    Node* curr = StrList->_head;
-    Node* nextNode = NULL;
 
-    // Traverse the list
-    while (curr!=NULL){
-        nextNode=curr->_next;
-        // Traverse the remaining list to find the minimum string
-        while(nextNode!=NULL){
-            // Compare the strings
-            if (strcmp(curr->_data, nextNode->_data) > 0) {
-                // Swap the strings
-                char* temp= curr->_data;
-                curr->_data=nextNode->_data;
-                nextNode->_data = temp;
+void StrList_sort( StrList* StrList){
+    if (StrList == NULL || StrList -> head == NULL || StrList -> head -> _next == NULL) {
+        return;
+    }
+    int swapped;
+    do {
+        swapped = 0;
+        Node *temp = StrList -> head;
+        while (temp->_next != NULL) {
+            if (strcmp(temp -> value, temp -> _next -> value) > 0) {
+                char *c = temp -> value;
+                temp -> value = temp -> _next -> value;
+                temp -> _next -> value = c;
+                swapped = 1;
             }
-            // Move to the next node
-            nextNode = nextNode->_next;
+            temp = temp -> _next;
         }
-        // Move to the next node
-        curr = curr->_next;
-    }
+    }while (swapped);
 }
-int StrList_isSorted(StrList* StrList){
-    if (StrList == NULL || StrList->_size <= 1) {
-        return 1; //No need to check
-    }
-    Node* curr = StrList->_head;
-    Node* nextNode = curr->_next;
 
-    while (nextNode!=NULL){
-        // Compare current node's data with the next node's data
-        if (strcmp(curr->_data, nextNode->_data) > 0) {
-            return false; // List is not sorted
+int StrList_isSorted(StrList* StrList) {
+    if (StrList == NULL || StrList->head == NULL) {
+        return 1;
+    }
+    if(StrList_size(StrList) == 1) {return 1;}
+    Node* current = StrList->head;
+    while (current -> _next != NULL) {
+        if (strcmp(current -> value, current -> _next -> value) > 0) {
+            return 0;
         }
-        // Move to the next pair of nodes
-        curr = nextNode;
-        nextNode = curr->_next;
+        current = current -> _next;
     }
-
-    // If the loop completes without finding any out-of-order elements, the list is sorted
-    return true;
+    return 1;
 }
