@@ -56,7 +56,7 @@ size_t StrList_size(const StrList* StrList){
 
 void StrList_insertLast(StrList* StrList, const char* data){
     if(StrList == NULL){ return;}
-    Node *newNode = (Node*) malloc(sizeof (Node));
+    Node newNode = (Node) malloc(sizeof (Node));
     newNode -> value = strdup(data);
     newNode -> _next = NULL;
 
@@ -77,7 +77,7 @@ void StrList_insertAt(StrList* StrList, const char* data, int index){
     if (index >= StrList_size(StrList) || StrList == NULL || index < 0){
         return;
     }
-    Node *newNode = (Node*) malloc(sizeof (Node));
+    Node newNode = (Node) malloc(sizeof (Node));
     if(newNode == NULL){
         return;
     }
