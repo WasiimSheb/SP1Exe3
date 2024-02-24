@@ -268,23 +268,39 @@ StrList* StrList_clone(const StrList* OriginalList){
     return p;
 }
 
-void StrList_reverse( StrList* StrList){
-    if (StrList == NULL || StrList-> head == NULL || StrList-> size <= 1) {
-        return; // Empty list or single node, no need to reverse
-    }
-    Node* curr = StrList-> head;
-    Node* prev = NULL;
-    Node* next = NULL;
+// void StrList_reverse( StrList* StrList){
+//     if (StrList == NULL || StrList-> head == NULL || StrList-> size <= 1) {
+//         return; // Empty list or single node, no need to reverse
+//     }
+//     Node* curr = StrList-> head;
+//     Node* prev = NULL;
+//     Node* next = NULL;
 
-    // Traverse the list and reverse the pointers
-    while (curr != NULL) {
-        next = curr->_next; // Store the next node
-        curr->_next = prev; // Reverse the pointer
-        prev = curr; // Move prev to current node
-        curr = next; // Move current to next node
+//     // Traverse the list and reverse the pointers
+//     while (curr != NULL) {
+//         next = curr->_next; // Store the next node
+//         curr->_next = prev; // Reverse the pointer
+//         prev = curr; // Move prev to current node
+//         curr = next; // Move current to next node
+//     }
+//     // Update the head of the list
+//     StrList-> head = prev;
+// }
+
+void StrList_reverse(StrList* StrList){
+    if(StrList == NULL || StrList -> head == NULL || StrList -> head -> _next == NULL){ return;}
+    if(StrList_size(StrList) == 1){ return;}
+    Node *prev = NULL;
+    Node *current = StrList -> head;
+    Node *next = NULL;
+
+    while (current != NULL) {
+        next = current -> _next;
+        current -> _next = prev;
+        prev = current;
+        current = next;
     }
-    // Update the head of the list
-    StrList-> head = prev;
+    StrList -> head = prev;
 }
 
 void StrList_sort( StrList* StrList){
