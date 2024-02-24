@@ -36,20 +36,18 @@ StrList* StrList_alloc() {
     return p;
 }
 
-void StrList_free(StrList* p) {
-    if (p == NULL) {
-        return;
+void StrList_free(StrList* StrList) {
+    if (StrList) {
+        Node* node = StrList-> head;
+        while (node) {
+            Node* temp = node;
+            node = node->_next;
+            free(temp-> value);
+            free(temp);
+        }
+        free(StrList);
     }
-
-    Node* current = p->head;
-    while (p -> head != NULL) {
-        Node* temp = current -> _next;
-        Nodefree(temp);
-        current = current -> _next;
-    }
-    free(p);
 }
-
 size_t StrList_size(const StrList* StrList){
     return StrList -> size;
 }
