@@ -1,16 +1,22 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "StrList.h"
 #define V 100
 
 int main() {
     StrList* strList = StrList_alloc();
-    int c = 1;
+    int c ;
     char v[V];
     int x, y;
 
-    while(c != 0) {
+    while(1) {
 
-        scanf("%d", &c);
+        if(scanf("%d", &c)!=1){
+            printf("invalid choise");
+             while (getchar() != '\n');
+             continue;
+        }
 
         switch (c) {
             case 0:
@@ -56,8 +62,11 @@ int main() {
             case 10:
                 StrList_reverse(strList);
                 break;
-            case 11:
-                StrList_free(strList);
+            case 11://Clear the list
+                size_t size = StrList_size(strList);
+                for(size_t i=0; i<size; i++){
+                    StrList_removeAt(strList, 0);
+                }
                 break;
             case 12:
                 StrList_sort(strList);
@@ -69,6 +78,9 @@ int main() {
                     printf("false\n");
                 }
                 break;
+            default:
+                printf("Invalid choice. \n");
+                break;      
         }
     }
 
