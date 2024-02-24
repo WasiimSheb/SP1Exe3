@@ -73,10 +73,12 @@ void StrList_insertLast(StrList* StrList, const char* data){
 
 void StrList_insertAt(StrList* StrList, const char* data, int index){
     if (index >= StrList_size(StrList) || StrList == NULL || index < 0){
+        printf("\n");
         return;
     }
     Node* newNode = (Node*) malloc(sizeof (Node));
     if(newNode == NULL){
+        printf("\n");
         return;
     }
     newNode -> value = strdup(data);
@@ -143,7 +145,7 @@ void StrList_printAt(const StrList* Strlist, int index){
     }
     if(temp == NULL || temp -> value == NULL){ return;}
     char *curr = temp -> value;
-    printf("%s", curr);
+    printf("%s\n", curr);
 }
 
 int StrList_printLen(const StrList* Strlist){
@@ -266,20 +268,23 @@ StrList* StrList_clone(const StrList* OriginalList){
     return p;
 }
 
-void StrList_reverse(StrList* StrList){
-    if(StrList == NULL || StrList -> head == NULL || StrList -> head -> _next == NULL){ return;}
-    if(StrList_size(StrList) == 1){ return;}
-    Node *prev = NULL;
-    Node *current = StrList -> head;
-    Node *next = NULL;
-
-    while (current != NULL) {
-        next = current -> _next;
-        current -> _next = prev;
-        prev = current;
-        current = next;
+void StrList_reverse( StrList* StrList){
+    if (StrList == NULL || StrList-> head == NULL || StrList-> size <= 1) {
+        return; // Empty list or single node, no need to reverse
     }
-    StrList -> head = prev;
+    Node* curr = StrList-> head;
+    Node* prev = NULL;
+    Node* next = NULL;
+
+    // Traverse the list and reverse the pointers
+    while (curr != NULL) {
+        next = curr->_next; // Store the next node
+        curr->_next = prev; // Reverse the pointer
+        prev = curr; // Move prev to current node
+        curr = next; // Move current to next node
+    }
+    // Update the head of the list
+    StrList-> head = prev;
 }
 
 void StrList_sort( StrList* StrList){
