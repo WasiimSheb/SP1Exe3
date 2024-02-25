@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "StrList.h"
-#define V 100
+#define V 100 // maximum length of strings
 
 int main() {
     StrList* strList = StrList_alloc();
