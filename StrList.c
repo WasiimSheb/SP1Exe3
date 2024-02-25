@@ -3,19 +3,21 @@
 #include "StrList.h"
 #include <stdio.h>
 
+// Structure for a Node in the StrList
 typedef struct Node
 {
-    char* value;
-    struct Node* _next;
-}Node;
+    char* value;        // Value of the node
+    struct Node* _next; // Pointer to the next node
+} Node;
 
-
+// Structure for the StrList
 typedef struct _StrList
 {
-    Node* head;
-    size_t size;
-}StrList;
+    Node* head;     // Pointer to the head of the list
+    size_t size;    // Size of the list
+} StrList;
 
+// Allocate memory for a Node and initialize its value
 Node* Node_alloc(char* value){
     Node* allocate = (Node*) malloc(sizeof(Node));
     if (allocate == NULL){return NULL;}
@@ -23,19 +25,22 @@ Node* Node_alloc(char* value){
     return allocate;
 }
 
+// Free memory allocated for a Node
 void Nodefree(Node* p){
     free(p -> value);
     free(p);
 }
 
+// Allocate memory for a StrList
 StrList* StrList_alloc() {
-    StrList* p= (StrList*)malloc(sizeof(StrList));
+    StrList* p = (StrList*)malloc(sizeof(StrList));
     if(p == NULL) {return NULL;}
     p -> head = NULL;
-    p -> size= 0;
+    p -> size = 0;
     return p;
 }
 
+// Free memory allocated for a StrList
 void StrList_free(StrList* StrList) {
     if (StrList) {
         Node* node = StrList-> head;
@@ -48,13 +53,16 @@ void StrList_free(StrList* StrList) {
         free(StrList);
     }
 }
+
+// Get the size of the StrList
 size_t StrList_size(const StrList* StrList){
     return StrList -> size;
 }
 
+// Insert a new node at the end of the StrList
 void StrList_insertLast(StrList* StrList, const char* data){
     if(StrList == NULL){ return;}
-    Node* newNode = (Node*) malloc(sizeof (Node));
+    Node* newNode = (Node*) malloc(sizeof(Node));
     newNode -> value = strdup(data);
     newNode -> _next = NULL;
 
@@ -71,6 +79,7 @@ void StrList_insertLast(StrList* StrList, const char* data){
     StrList -> size++;
 }
 
+// Insert a new node at a specific index in the StrList
 void StrList_insertAt(StrList* StrList, const char* data, int index){
     if (index >= StrList_size(StrList) || StrList == NULL || index < 0){
         printf("\n");
@@ -105,6 +114,7 @@ void StrList_insertAt(StrList* StrList, const char* data, int index){
     StrList->size++;
 }
 
+// Get the value of the first node in the StrList
 char* StrList_firstData(const StrList* StrList){
     if (StrList != NULL){
         if (StrList -> head != NULL){
@@ -114,6 +124,7 @@ char* StrList_firstData(const StrList* StrList){
     return NULL;
 }
 
+// Print all elements in the StrList
 void StrList_print(const StrList* StrList) {
     if(StrList == NULL || StrList -> head == NULL){
         printf("\n");
@@ -127,6 +138,7 @@ void StrList_print(const StrList* StrList) {
     printf("%s\n", current->value);
 }
 
+// Print the element at a specific index in the StrList
 void StrList_printAt(const StrList* Strlist, int index){
     if (Strlist == NULL || index > StrList_size(Strlist) || index < 0){
         return;
@@ -144,6 +156,7 @@ void StrList_printAt(const StrList* Strlist, int index){
     printf("%s\n", curr);
 }
 
+// Get the total length of all elements in the StrList
 int StrList_printLen(const StrList* Strlist){
     if(Strlist == NULL){return 0;}
     int sum = 0;
@@ -160,6 +173,7 @@ int StrList_printLen(const StrList* Strlist){
     return sum;
 }
 
+// Count occurrences of a specific string in the StrList
 int StrList_count(StrList* StrList, const char* data){
     if (StrList == NULL || StrList -> head == NULL){return 0;}
     Node* curr = StrList -> head;
@@ -173,6 +187,7 @@ int StrList_count(StrList* StrList, const char* data){
     return counter;
 }
 
+// Remove all occurrences of a specific string from the StrList
 void StrList_remove(StrList* StrList, const char* data){
     if (StrList == NULL || StrList -> head == NULL){return;}
     Node* curr = StrList->head;
@@ -197,6 +212,7 @@ void StrList_remove(StrList* StrList, const char* data){
     }
 }
 
+// Remove the element at a specific index in the StrList
 void StrList_removeAt(StrList* StrList, int index){
     if (StrList == NULL || StrList -> head == NULL || index >= StrList_size(StrList) || index < 0){
         return;
@@ -221,7 +237,7 @@ void StrList_removeAt(StrList* StrList, int index){
     StrList -> size--;
 }
 
-
+// Check if two StrLists are equal
 int StrList_isEqual(const StrList* StrList1, const StrList* StrList2){
     if((StrList1 == NULL && StrList2 != NULL) || (StrList1 != NULL && StrList2 == NULL)){return 0;}
     if(StrList_size(StrList1) != StrList_size(StrList2)){return 0;}
@@ -241,6 +257,7 @@ int StrList_isEqual(const StrList* StrList1, const StrList* StrList2){
     return 1;
 }
 
+// Clone a StrList
 StrList* StrList_clone(const StrList* OriginalList){
     if(OriginalList == NULL || OriginalList -> head == NULL){return NULL;}
     StrList* p = StrList_alloc();
@@ -264,7 +281,7 @@ StrList* StrList_clone(const StrList* OriginalList){
     return p;
 }
 
-
+// Reverse the StrList
 void StrList_reverse(StrList* StrList){
     if(StrList == NULL || StrList -> head == NULL || StrList -> head -> _next == NULL){ return;}
     if(StrList_size(StrList) == 1){ return;}
@@ -281,6 +298,7 @@ void StrList_reverse(StrList* StrList){
     StrList -> head = prev;
 }
 
+// Sort the StrList using the BubbleSort Algorithm
 void StrList_sort( StrList* StrList){
     if (StrList == NULL || StrList -> head == NULL || StrList -> head -> _next == NULL) {
         return;
@@ -301,6 +319,7 @@ void StrList_sort( StrList* StrList){
     }while (swapped);
 }
 
+// Check if the StrList is sorted
 int StrList_isSorted(StrList* StrList) {
     if (StrList == NULL || StrList->head == NULL) {
         return 1;
